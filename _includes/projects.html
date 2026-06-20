@@ -1,38 +1,96 @@
 {% assign projects = site.data.data.projects %}
 {% if projects %}
-<!-- Use original experience section css -->
-<section class="section experiences-section">
+<section class="section projects-section timeline-section">
   <h2 class="section-title">
     <span class="fa-stack fa-xs">
       <i class="fas fa-circle fa-stack-2x"></i>
       <i class="fas fa-briefcase fa-stack-1x fa-inverse"></i>
     </span>
-    Projects
+    Major Projects
   </h2>
-  {% for project in projects %}
-  <div class="item">
 
-    <div class="meta">
+  {% assign groups = "GPAI,수학대왕,Knowre,GIST" | split: "," %}
+  <div class="timeline">
+    {% for g in groups %}
+    {% assign group_projects = projects | where: "group", g %}
+    {% if g == "GPAI" or g == "수학대왕" %}{% assign group_projects = group_projects | reverse %}{% endif %}
+    {% if group_projects.size > 0 %}
+    <details class="item project-group" open>
+      <summary class="project-group-head">
+        <div class="project-group-text">
+          <h3 class="project-group-title">{{ g }}</h3>
+          <span class="project-group-meta">
+            {% case g %}
+              {% when "GPAI" %}Turing Co. ltd. · 2025 – now
+              {% when "수학대왕" %}Turing Co. ltd. · 2023 – now
+              {% when "Knowre" %}Knowre Inc. · 2021 – 2022
+              {% when "GIST" %}GIST Computer Vision Lab · 2018 – 2021
+            {% endcase %}
+          </span>
+        </div>
+        <span class="project-group-count">{{ group_projects.size }}</span>
+        <i class="fas fa-chevron-down project-group-chevron"></i>
+      </summary>
 
-      <div class="upper-row">
-        <h3 class="job-title">{{ project.title }}</h3>
-        <div class="time">{{ project.time }}</div>
-      </div><!--//upper-row-->
-      <div class="company-topic">
-        <div class="company">{{ project.company }}</div>
-        <div class="topic">{{ project.topic }}</div>
-      </div><!--//company-topic-->
-    </div><!--//meta-->
-
-    {% if project.details %}
-    <div class="details">
-      {{ project.details | markdownify }}
-    </div><!--//details-->
+      <div class="projects-grid">
+        {% for project in group_projects %}
+        <details class="project-card{% if project.image %} has-bg{% endif %}"{% if project.image %} style="--bg-image: url('{{ project.image | relative_url }}'); --bg-pos: {{ project.image_pos | default: 'center' }};{% if project.image_ratio %} --bg-ratio: {{ project.image_ratio }};{% endif %}{% if project.image_dim_top %} --bg-dim-top: {{ project.image_dim_top }};{% endif %}{% if project.image_dim_bottom %} --bg-dim-bottom: {{ project.image_dim_bottom }};{% endif %}"{% endif %}>
+          <summary class="project-summary">
+            <div class="project-head">
+              <h4 class="project-title">{{ project.title }}</h4>
+              {% if project.time %}<span class="project-time">{{ project.time }}</span>{% endif %}
+            </div>
+            <div class="project-sub">
+              <span class="project-sub-text">
+                {% if project.company %}<span class="project-company">{{ project.company }}</span>{% endif %}
+                {% if project.topic %}<span class="project-topic">{{ project.topic }}</span>{% endif %}
+              </span>
+              <i class="fas fa-chevron-down project-chevron"></i>
+            </div>
+          </summary>
+          {% if project.details %}
+          <div class="details project-details">
+            {{ project.details | markdownify }}
+          </div><!--//details-->
+          {% endif %}
+          {% if project.image %}
+          <div class="project-zoom-wrap">
+            <button type="button" class="project-zoom-btn" data-src="{{ project.image | relative_url }}">
+              {% if project.image contains '.gif' %}<i class="fas fa-play"></i> 영상 보기{% else %}<i class="fas fa-search-plus"></i> 크게 보기{% endif %}
+            </button>
+          </div>
+          {% endif %}
+        </details><!--//project-card-->
+        {% endfor %}
+      </div><!--//projects-grid-->
+    </details><!--//item-->
     {% endif %}
+    {% endfor %}
+  </div><!--//timeline-->
 
-  </div><!--//item-->
-  {% endfor %}
+  <p class="projects-more">And many more!</p>
+
+  <div class="project-lightbox" id="projectLightbox" hidden>
+    <div class="project-lightbox-backdrop"></div>
+    <button type="button" class="project-lightbox-close" aria-label="닫기">&times;</button>
+    <img class="project-lightbox-img" src="" alt="">
+  </div>
+
+  <script>
+  (function () {
+    var lb = document.getElementById('projectLightbox');
+    if (!lb) return;
+    var img = lb.querySelector('.project-lightbox-img');
+    function open(src) { img.src = src; lb.hidden = false; document.body.style.overflow = 'hidden'; }
+    function close() { lb.hidden = true; img.src = ''; document.body.style.overflow = ''; }
+    document.querySelectorAll('.project-zoom-btn').forEach(function (b) {
+      b.addEventListener('click', function (e) { e.preventDefault(); open(b.getAttribute('data-src')); });
+    });
+    lb.querySelector('.project-lightbox-backdrop').addEventListener('click', close);
+    lb.querySelector('.project-lightbox-close').addEventListener('click', close);
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !lb.hidden) close(); });
+  })();
+  </script>
 
 </section><!--//section-->
 {% endif %}
-
