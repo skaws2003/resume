@@ -1,6 +1,6 @@
 {% assign experiences = site.data.data.experiences %}
 {% if experiences %}
-<section class="section experiences-section">
+<section class="section experiences-section timeline-section">
   <h2 class="section-title">
     <span class="fa-stack fa-xs">
       <i class="fas fa-circle fa-stack-2x"></i>
@@ -8,6 +8,7 @@
     </span>
     Experiences
   </h2>
+  <div class="timeline">
   {% for experience in experiences %}
   <div class="item">
 
@@ -15,7 +16,7 @@
 
       <div class="upper-row">
         <h3 class="job-title">{{ experience.title }}</h3>
-        <div class="time">{{ experience.time }}</div>
+        <div class="time">{{ experience.time }}{% if experience.since %}{% assign _p = experience.since | split: '-' %}{% assign _sy = _p[0] | plus: 0 %}{% assign _sm = _p[1] | plus: 0 %}{% assign _ny = site.time | date: '%Y' | plus: 0 %}{% assign _nm = site.time | date: '%m' | plus: 0 %}{% assign _months = _ny | minus: _sy | times: 12 | plus: _nm | minus: _sm | plus: 1 %}{% assign _years = _months | divided_by: 12 %}{% assign _rem = _months | modulo: 12 %} ({% if _years > 0 %}{{ _years }}년{% if _rem > 0 %} {{ _rem }}개월{% endif %}{% else %}{{ _rem }}개월{% endif %}){% endif %}</div>
       </div><!--//upper-row-->
       <div class="company-topic">
         <div class="company">{{ experience.company }}</div>
@@ -31,6 +32,7 @@
 
   </div><!--//item-->
   {% endfor %}
+  </div><!--//timeline-->
 
 </section><!--//section-->
 {% endif %}

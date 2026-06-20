@@ -1,34 +1,30 @@
 {% assign interests = site.data.data.interests %}
 {% if interests %}
-<section class="section experiences-section">
+<section class="section interests-section">
   <h2 class="section-title">
     <span class="fa-stack fa-xs">
       <i class="fas fa-circle fa-stack-2x"></i>
-      <i class="fas fa-briefcase fa-stack-1x fa-inverse"></i>
+      <i class="fas fa-lightbulb fa-stack-1x fa-inverse"></i>
     </span>
     Research Interests
   </h2>
 
-  {% for interest in interests %}
-  <div class="item">
-
-    <div class="meta">
-
-      <div class="upper-row">
-        <h3 class="job-title">{{ interest.title }}</h3>
-      </div><!--//upper-row-->
-
-    </div><!--//meta-->
-
-    {% if interest.details %}
-    <div class="details">
-      {{ interest.details | markdownify }}
-    </div><!--//details-->
-    {% endif %}
-
-  </div><!--//item-->
-  {% endfor %}
+  <div class="interests-grid">
+    {% for interest in interests %}
+    <div class="interest-card">
+      <div class="interest-icon icon-{{ interest.color | default: 'theme' }}">
+        <svg viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+          <path stroke="none" stroke-width="0" fill="#f0f1f3" d="M300,532.35C369.38,532.32,429.11,491.63,474.52,439.18C522.89,383.32,569.17,314.32,550.74,242.77C532.67,172.57,456.24,142.62,390.37,112.35C326.66,83.06,258.84,53.52,193.33,78.49C121.61,105.82,62.81,167.20,48.57,242.61C34.84,315.39,76.69,383.44,125.23,439.37C170.73,491.81,230.57,532.39,300,532.35"></path>
+        </svg>
+        <i class="fas {{ interest.icon | default: 'fa-flask' }}"></i>
+      </div>
+      <h3 class="interest-title">{{ interest.title }}</h3>
+      {% if interest.summary %}
+      <p class="interest-desc">{{ interest.summary }}</p>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
 
 </section><!--//section-->
 {% endif %}
-
